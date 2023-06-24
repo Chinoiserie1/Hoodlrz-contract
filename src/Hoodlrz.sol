@@ -7,6 +7,11 @@ import "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import "./IHoodlrz.sol";
 import "./verification/Verification.sol";
 
+/**
+ * @title Hoodlrz
+ * @author chixx.eth
+ * @notice ERC721A for Hoodlrz
+ */
 contract Hoodlrz is ERC721A, Ownable {
   string baseURI = "";
 
