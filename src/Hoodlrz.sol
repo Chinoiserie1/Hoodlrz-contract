@@ -8,6 +8,7 @@ error contractFreezed();
 error currentSupplyExceedNewMaxSupply();
 
 contract Hoodlrz is ERC721A, Ownable {
+  string baseURI = "";
   uint256 public maxSupply = 1000;
 
   bool public freezeContract;
@@ -28,6 +29,12 @@ contract Hoodlrz is ERC721A, Ownable {
     if (freezeContract) revert contractFreezed();
     freezeContract = true;
     emit FreezeContract();
+  }
+
+  // OVERRIDE FUNCTIONS
+
+  function _baseURI() internal view override virtual returns (string memory) {
+    return baseURI;
   }
 
   function _startTokenId() internal view override virtual returns (uint256) {
