@@ -8,11 +8,12 @@ error contractFreezed();
 error currentSupplyExceedNewMaxSupply();
 
 contract Hoodlrz is ERC721A, Ownable {
-  uint256 maxSupply = 1000;
+  uint256 public maxSupply = 1000;
 
-  bool freezeContract;
+  bool public freezeContract;
 
   event SetNewMaxSupply(uint256 newMaxSupply);
+  event FreezeContract();
 
   constructor() ERC721A("Hoodlrz", "HDZ") {}
 
@@ -21,5 +22,11 @@ contract Hoodlrz is ERC721A, Ownable {
     if (totalSupply() < newMaxSupply) revert currentSupplyExceedNewMaxSupply();
     maxSupply = newMaxSupply;
     emit SetNewMaxSupply(newMaxSupply);
+  }
+
+  function freeze() external onlyOwner {
+    if (freezeContract) revert contractFreezed();
+    freezeContract = true;
+    emit FreezeContract();
   }
 }
