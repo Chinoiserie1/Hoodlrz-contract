@@ -9,12 +9,15 @@ error currentSupplyExceedNewMaxSupply();
 
 contract Hoodlrz is ERC721A, Ownable {
   string baseURI = "";
-  uint256 public maxSupply = 1000;
+
+  uint256 public maxSupply = 100;
+  uint256 public publicPrice;
 
   bool public freezeContract;
 
   event SetNewMaxSupply(uint256 newMaxSupply);
   event SetNewBaseURI(string newBaseURI);
+  event SetNewPublicPrice(uint256 newPublicPrice);
   event FreezeContract();
 
   constructor() ERC721A("Hoodlrz", "HDZ") {}
@@ -42,6 +45,16 @@ contract Hoodlrz is ERC721A, Ownable {
     if (freezeContract) revert contractFreezed();
     baseURI = _newBaseURI;
     emit SetNewBaseURI(_newBaseURI);
+  }
+
+  /**
+   * @notice set the price for public mint
+   * @param _newPublicPrice the new price for public mint
+   */
+  function setPublicPrice(uint256 _newPublicPrice) external onlyOwner {
+    if (freezeContract) revert contractFreezed();
+    publicPrice = _newPublicPrice;
+    emit SetNewPublicPrice(_newPublicPrice);
   }
 
   /**
