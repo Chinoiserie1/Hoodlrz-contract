@@ -29,4 +29,8 @@ contract Hoodlrz is ERC721A, Ownable {
     freezeContract = true;
     emit FreezeContract();
   }
+
+  function _startTokenId() internal view override virtual returns (uint256) {
+    return 1;
+  }
 }
