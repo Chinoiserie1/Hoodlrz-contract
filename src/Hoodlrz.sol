@@ -10,6 +10,8 @@ error currentSupplyExceedNewMaxSupply();
 contract Hoodlrz is ERC721A, Ownable {
   string baseURI = "";
 
+  address signer;
+
   uint256 public maxSupply = 100;
   uint256 public publicPrice;
 
@@ -20,7 +22,9 @@ contract Hoodlrz is ERC721A, Ownable {
   event SetNewPublicPrice(uint256 newPublicPrice);
   event FreezeContract();
 
-  constructor() ERC721A("Hoodlrz", "HDZ") {}
+  constructor() ERC721A("Hoodlrz", "HDLZ") {
+    signer = msg.sender;
+  }
 
   // SETTER FUNCTION
 
@@ -55,6 +59,16 @@ contract Hoodlrz is ERC721A, Ownable {
     if (freezeContract) revert contractFreezed();
     publicPrice = _newPublicPrice;
     emit SetNewPublicPrice(_newPublicPrice);
+  }
+
+  /**
+   * @notice set the new signer for check signature
+   * @param _newSigner address of the new signer
+   * @dev this function can be call at any moment even if the contract is freeze
+   * { WARNING } if th signer change all precedent signature will be rejected
+   */
+  function setSigner(address _newSigner) external onlyOwner {
+    signer = _newSigner;
   }
 
   /**
