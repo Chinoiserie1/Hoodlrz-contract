@@ -65,7 +65,9 @@ contract Hoodlrz is ERC721A, Ownable {
     verify(msg.sender, _quantity, Status.allowlistMint, _signature)
     checkStatus(Status.allowlistMint)
   {
+    if (totalSupply() + _quantity > maxSupply) revert maxSupplyReach();
 
+    _mint(msg.sender, _quantity);
   }
 
   // SETTER FUNCTIONS
