@@ -18,6 +18,14 @@ contract Hoodlrz is ERC721A, Ownable {
 
   constructor() ERC721A("Hoodlrz", "HDZ") {}
 
+  // SETTER FUNCTION
+
+  /**
+   * @notice Set max supply that can be minted
+   * @param newMaxSupply the new max supply
+   * @dev to call this function newMaxSupply need to be superior that actual supply
+   * and the contract not freeze
+   */
   function setMaxSupply(uint256 newMaxSupply) external onlyOwner {
     if (freezeContract) revert contractFreezed();
     if (totalSupply() < newMaxSupply) revert currentSupplyExceedNewMaxSupply();
@@ -25,6 +33,9 @@ contract Hoodlrz is ERC721A, Ownable {
     emit SetNewMaxSupply(newMaxSupply);
   }
 
+  /**
+   * @notice freeze the contract for immutability
+   */
   function freeze() external onlyOwner {
     if (freezeContract) revert contractFreezed();
     freezeContract = true;
