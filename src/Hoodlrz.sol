@@ -13,12 +13,14 @@ contract Hoodlrz is ERC721A, Ownable {
   address signer;
 
   uint256 public maxSupply = 100;
+  uint256 public whitelistPrice;
   uint256 public publicPrice;
 
   bool public freezeContract;
 
   event SetNewMaxSupply(uint256 newMaxSupply);
   event SetNewBaseURI(string newBaseURI);
+  event SetNewWhitelistPrice(uint256 newWhitelistPrice);
   event SetNewPublicPrice(uint256 newPublicPrice);
   event FreezeContract();
 
@@ -57,6 +59,12 @@ contract Hoodlrz is ERC721A, Ownable {
     if (freezeContract) revert contractFreezed();
     baseURI = _newBaseURI;
     emit SetNewBaseURI(_newBaseURI);
+  }
+
+  function setWhitelistprice(uint256 _newWhitelistPrice) external onlyOwner {
+    if (freezeContract) revert contractFreezed();
+    whitelistPrice = _newWhitelistPrice;
+    emit SetNewWhitelistPrice(_newWhitelistPrice);
   }
 
   /**
