@@ -2,6 +2,9 @@
 pragma solidity ^0.8.13;
 
 error maxSupplyReach();
+error maxQuantityReach();
+
+error valueSendIncorrect();
 
 error contractFreezed();
 error currentSupplyExceedNewMaxSupply();
