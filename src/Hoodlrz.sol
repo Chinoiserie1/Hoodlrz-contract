@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.19;
 
 import "ERC721A/ERC721A.sol";
 import "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
-error contractFreezed();
-error currentSupplyExceedNewMaxSupply();
+import "./IHoodlrz.sol";
+import "./verification/Verification.sol";
 
 contract Hoodlrz is ERC721A, Ownable {
   string baseURI = "";
@@ -24,6 +24,14 @@ contract Hoodlrz is ERC721A, Ownable {
 
   constructor() ERC721A("Hoodlrz", "HDLZ") {
     signer = msg.sender;
+  }
+
+  /**
+   * @notice verify signature
+   */
+  modifier verify(address _to, uint256 _tokenId, uint256 _amount, Status _status, bytes memory _sign) {
+    if (!Verification.verifySignature(signer, _to, _amount, _status, _sign)) revert invalidSignature();
+    _;
   }
 
   // SETTER FUNCTION
