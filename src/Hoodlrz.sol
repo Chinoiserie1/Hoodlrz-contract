@@ -84,6 +84,16 @@ contract Hoodlrz is ERC721A, Ownable {
   }
 
   /**
+   * @notice set the max per address an address can mint in public mint
+   * @param _maxPerAddress the new max per address
+   */
+  function setMaxPerAddress(uint256 _maxPerAddress) external onlyOwner {
+    if (freezeContract) revert contractFreezed();
+    maxPerAddress = _maxPerAddress;
+    emit SetNewMaxPerAddress(_maxPerAddress);
+  }
+
+  /**
    * @notice set the new base URI
    * @param _newBaseURI the new base URI
    */
