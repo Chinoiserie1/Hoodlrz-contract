@@ -18,12 +18,16 @@ contract Hoodlrz is ERC721A, Ownable {
   address signer;
 
   uint256 public maxSupply = 100;
+  uint256 public maxPerAddress = 2;
   uint256 public whitelistPrice;
   uint256 public publicPrice;
 
   bool public freezeContract;
 
+  Status public currentStatus;
+
   event SetNewMaxSupply(uint256 newMaxSupply);
+  event SetNewMaxPerAddress(uint256 newMaxPerAddress);
   event SetNewBaseURI(string newBaseURI);
   event SetNewWhitelistPrice(uint256 newWhitelistPrice);
   event SetNewPublicPrice(uint256 newPublicPrice);
@@ -36,12 +40,35 @@ contract Hoodlrz is ERC721A, Ownable {
   /**
    * @notice verify signature
    */
-  modifier verify(address _to, uint256 _tokenId, uint256 _amount, Status _status, bytes memory _sign) {
+  modifier verify(address _to, uint256 _amount, Status _status, bytes memory _sign) {
     if (!Verification.verifySignature(signer, _to, _amount, _status, _sign)) revert invalidSignature();
     _;
   }
 
-  // SETTER FUNCTION
+  /**
+   * @notice check if the status match
+   */
+  modifier checkStatus(Status _status) {
+    if (currentStatus != _status) revert invalidStatus();
+    _;
+  }
+
+  // MINT FUNCTIONS
+
+  /**
+   * @notice mint function for allowlist
+   * @param _quantity the quantity to mint related to the amount given by the signer
+   * @param _signature the signature
+   */
+  function allowlistMint(uint256 _quantity, bytes memory _signature)
+    external
+    verify(msg.sender, _quantity, Status.allowlistMint, _signature)
+    checkStatus(Status.allowlistMint)
+  {
+
+  }
+
+  // SETTER FUNCTIONS
 
   /**
    * @notice Set max supply that can be minted
