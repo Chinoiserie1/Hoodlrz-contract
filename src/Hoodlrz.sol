@@ -66,6 +66,10 @@ contract Hoodlrz is ERC721A, Ownable {
     emit SetNewBaseURI(_newBaseURI);
   }
 
+  /**
+   * @notice set the price for whitelist mint
+   * @param _newWhitelistPrice the new price for whitelist mint
+   */
   function setWhitelistprice(uint256 _newWhitelistPrice) external onlyOwner {
     if (freezeContract) revert contractFreezed();
     whitelistPrice = _newWhitelistPrice;
