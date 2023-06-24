@@ -72,6 +72,12 @@ contract Hoodlrz is ERC721A, Ownable {
     _mint(msg.sender, _quantity);
   }
 
+  /**
+   * @notice mint function for whitelist
+   * @param _quantity the quantity to mint
+   * @param _quantitySignature the quantity signer assign to the user
+   * @param _signature the signature
+   */
   function whitelistMint(uint256 _quantity, uint256 _quantitySignature, bytes memory _signature)
     external
     payable
