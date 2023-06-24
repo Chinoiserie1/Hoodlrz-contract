@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 error maxSupplyReach();
-error maxQuantityReach();
+error maxQuantityAllowedReach();
 
 error valueSendIncorrect();
 

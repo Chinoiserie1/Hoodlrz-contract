@@ -27,6 +27,7 @@ contract Hoodlrz is ERC721A, Ownable {
   Status public currentStatus;
 
   mapping(address => uint256) private whitelistMintCount;
+  mapping(address => uint256) private publicMintCount;
 
   event SetNewMaxSupply(uint256 newMaxSupply);
   event SetNewMaxPerAddress(uint256 newMaxPerAddress);
@@ -85,12 +86,26 @@ contract Hoodlrz is ERC721A, Ownable {
     checkStatus(Status.whitelistMint)
   {
     if (_totalMinted() + _quantity > maxSupply) revert maxSupplyReach();
-    if ( whitelistMintCount[msg.sender] + _quantity > _quantitySignature) revert maxQuantityReach();
+    if ( whitelistMintCount[msg.sender] + _quantity > _quantitySignature) revert maxQuantityAllowedReach();
     if (msg.value < _quantity * whitelistPrice) revert valueSendIncorrect();
 
     _mint(msg.sender, _quantity);
 
     unchecked { whitelistMintCount[msg.sender] += _quantity; }
+  }
+
+  /**
+   * @notice mint function for public
+   * @param _quantity the quantity to mint
+   */
+  function publicMint(uint256 _quantity) external payable {
+    if (_totalMinted() + _quantity > maxSupply) revert maxSupplyReach();
+    if (msg.value < _quantity * publicPrice) revert valueSendIncorrect();
+    if (publicMintCount[msg.sender] + _quantity > maxPerAddress) revert maxQuantityAllowedReach();
+
+    _mint(msg.sender, _quantity);
+
+    unchecked { publicMintCount[msg.sender] += _quantity; }
   }
 
   // SETTER FUNCTIONS
