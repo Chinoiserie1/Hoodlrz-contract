@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
 import "ERC721A/ERC721A.sol";
@@ -17,22 +17,19 @@ contract Hoodlrz is ERC721A, Ownable {
 
   address signer;
 
-  uint256 public maxSupply = 100;
+  uint256 public maxSupply = 400;
   uint256 public maxPerAddress = 2;
-  uint256 public whitelistPrice;
-  uint256 public publicPrice;
+  uint256 public publicPrice = 0.03 ether;
 
   bool public freezeContract;
 
   Status public currentStatus;
 
-  mapping(address => uint256) private whitelistMintCount;
   mapping(address => uint256) private publicMintCount;
 
   event SetNewMaxSupply(uint256 newMaxSupply);
   event SetNewMaxPerAddress(uint256 newMaxPerAddress);
   event SetNewBaseURI(string newBaseURI);
-  event SetNewWhitelistPrice(uint256 newWhitelistPrice);
   event SetNewPublicPrice(uint256 newPublicPrice);
   event FreezeContract();
 
@@ -74,27 +71,6 @@ contract Hoodlrz is ERC721A, Ownable {
   }
 
   /**
-   * @notice mint function for whitelist
-   * @param _quantity the quantity to mint
-   * @param _quantitySignature the quantity signer assign to the user
-   * @param _signature the signature
-   */
-  function whitelistMint(uint256 _quantity, uint256 _quantitySignature, bytes memory _signature)
-    external
-    payable
-    verify(msg.sender, _quantitySignature, Status.whitelistMint, _signature)
-    checkStatus(Status.whitelistMint)
-  {
-    if (_totalMinted() + _quantity > maxSupply) revert maxSupplyReach();
-    if ( whitelistMintCount[msg.sender] + _quantity > _quantitySignature) revert maxQuantityAllowedReach();
-    if (msg.value < _quantity * whitelistPrice) revert valueSendIncorrect();
-
-    _mint(msg.sender, _quantity);
-
-    unchecked { whitelistMintCount[msg.sender] += _quantity; }
-  }
-
-  /**
    * @notice mint function for public
    * @param _quantity the quantity to mint
    */
@@ -109,6 +85,10 @@ contract Hoodlrz is ERC721A, Ownable {
   }
 
   // SETTER FUNCTIONS
+
+  function setStatus(Status _newStatus) external onlyOwner {
+    currentStatus = _newStatus;
+  }
 
   /**
    * @notice Set max supply that can be minted
@@ -144,16 +124,6 @@ contract Hoodlrz is ERC721A, Ownable {
   }
 
   /**
-   * @notice set the price for whitelist mint
-   * @param _newWhitelistPrice the new price for whitelist mint
-   */
-  function setWhitelistprice(uint256 _newWhitelistPrice) external onlyOwner {
-    if (freezeContract) revert contractFreezed();
-    whitelistPrice = _newWhitelistPrice;
-    emit SetNewWhitelistPrice(_newWhitelistPrice);
-  }
-
-  /**
    * @notice set the price for public mint
    * @param _newPublicPrice the new price for public mint
    */
@@ -167,7 +137,7 @@ contract Hoodlrz is ERC721A, Ownable {
    * @notice set the new signer for check signature
    * @param _newSigner address of the new signer
    * @dev this function can be call at any moment even if the contract is freeze
-   * { WARNING } if th signer change all precedent signature will be rejected
+   * { WARNING } if the signer change all precedent signature will be invalid
    */
   function setSigner(address _newSigner) external onlyOwner {
     signer = _newSigner;

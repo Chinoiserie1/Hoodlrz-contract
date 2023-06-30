@@ -6,7 +6,6 @@ import "./error/Error.sol";
 enum Status {
   notInitialize,
   allowlistMint,
-  whitelistMint,
   publicMint,
   paused
 }
