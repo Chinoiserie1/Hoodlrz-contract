@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/Hoodlrz.sol";
 import "../src/IHoodlrz.sol";
+import "../src/error/Error.sol";
 
 contract HoodlrzTest is Test {
   Hoodlrz public hoodlrz;
@@ -35,7 +36,7 @@ contract HoodlrzTest is Test {
     hoodlrz = new Hoodlrz();
   }
 
-  // TEST DEPLOY CORRECT
+  // TEST DEPLOY CORRECTLY
   function testCorrectlyDeployed() public view {
     require(hoodlrz.maxSupply() == 400, "fail init max supply");
     require(hoodlrz.signer() == address(owner), "fail init signer");
@@ -63,5 +64,17 @@ contract HoodlrzTest is Test {
     uint256 newMaxSupply = 100;
     hoodlrz.setMaxSupply(newMaxSupply);
     require(hoodlrz.maxSupply() == newMaxSupply, "fail apply new max supply");
+  }
+
+  function testSetMaxSupplyFailIfTotalBalanceMintedExceedNewMaxSuuply() public {
+    vm.deal(user1, 100 ether);
+    uint256 newMaxSupply = 10;
+    hoodlrz.setStatus(Status.publicMint);
+    vm.stopPrank();
+    vm.prank(user1);
+    hoodlrz.publicMint{value: 0.03 ether * 20}(20);
+    vm.prank(owner);
+    vm.expectRevert(currentSupplyExceedNewMaxSupply.selector);
+    hoodlrz.setMaxSupply(newMaxSupply);
   }
 }
