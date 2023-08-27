@@ -58,4 +58,10 @@ contract HoodlrzTest is Test {
     vm.expectRevert("Ownable: caller is not the owner");
     hoodlrz.setStatus(Status.paused);
   }
+
+  function testSetMaxSupply() public {
+    uint256 newMaxSupply = 100;
+    hoodlrz.setMaxSupply(newMaxSupply);
+    require(hoodlrz.maxSupply() == newMaxSupply, "fail apply new max supply");
+  }
 }

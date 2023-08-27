@@ -92,7 +92,7 @@ contract Hoodlrz is ERC721A, Ownable {
    */
   function setMaxSupply(uint256 _newMaxSupply) external onlyOwner {
     if (freezeContract) revert contractFreezed();
-    if (_totalMinted() < _newMaxSupply) revert currentSupplyExceedNewMaxSupply();
+    if (_totalMinted() > _newMaxSupply) revert currentSupplyExceedNewMaxSupply();
     maxSupply = _newMaxSupply;
     emit SetNewMaxSupply(_newMaxSupply);
   }
