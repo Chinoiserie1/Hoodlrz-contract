@@ -35,11 +35,20 @@ contract HoodlrzTest is Test {
     hoodlrz = new Hoodlrz();
   }
 
+  // TEST DEPLOY CORRECT
   function testCorrectlyDeployed() public view {
     require(hoodlrz.maxSupply() == 400, "fail init max supply");
     require(hoodlrz.signer() == address(owner), "fail init signer");
     require(hoodlrz.publicPrice() == 0.03 ether, "fail init price");
     require(hoodlrz.freezeContract() == false, "fail init freeze contract");
     require(hoodlrz.currentStatus() == Status.notInitialize, "fail init current status");
+  }
+
+  // TEST SETTER
+
+  function testSetStatus() public {
+    require(hoodlrz.currentStatus() == Status.notInitialize, "fail init current status");
+    hoodlrz.setStatus(Status.paused);
+    require(hoodlrz.currentStatus() == Status.paused, "fail set a new status");
   }
 }
