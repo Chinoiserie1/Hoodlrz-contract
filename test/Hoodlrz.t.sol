@@ -51,4 +51,11 @@ contract HoodlrzTest is Test {
     hoodlrz.setStatus(Status.paused);
     require(hoodlrz.currentStatus() == Status.paused, "fail set a new status");
   }
+
+  function testSetStatusOnlyOwner() public {
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert("Ownable: caller is not the owner");
+    hoodlrz.setStatus(Status.paused);
+  }
 }
