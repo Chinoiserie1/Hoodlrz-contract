@@ -39,5 +39,7 @@ contract HoodlrzTest is Test {
     require(hoodlrz.maxSupply() == 400, "fail init max supply");
     require(hoodlrz.signer() == address(owner), "fail init signer");
     require(hoodlrz.publicPrice() == 0.03 ether, "fail init price");
+    require(hoodlrz.freezeContract() == false, "fail init freeze contract");
+    require(hoodlrz.currentStatus() == Status.notInitialize, "fail init current status");
   }
 }
