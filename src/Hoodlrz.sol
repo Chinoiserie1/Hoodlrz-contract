@@ -13,19 +13,16 @@ import "./verification/Verification.sol";
  * @notice ERC721A for Hoodlrz
  */
 contract Hoodlrz is ERC721A, Ownable {
-  string baseURI = "";
+  string public baseURI = "";
 
-  address signer;
+  address public signer;
 
   uint256 public maxSupply = 400;
-  uint256 public maxPerAddress = 2;
   uint256 public publicPrice = 0.03 ether;
 
   bool public freezeContract;
 
   Status public currentStatus;
-
-  mapping(address => uint256) private publicMintCount;
 
   event SetNewMaxSupply(uint256 newMaxSupply);
   event SetNewMaxPerAddress(uint256 newMaxPerAddress);
@@ -77,11 +74,8 @@ contract Hoodlrz is ERC721A, Ownable {
   function publicMint(uint256 _quantity) external payable {
     if (_totalMinted() + _quantity > maxSupply) revert maxSupplyReach();
     if (msg.value < _quantity * publicPrice) revert valueSendIncorrect();
-    if (publicMintCount[msg.sender] + _quantity > maxPerAddress) revert maxQuantityAllowedReach();
 
     _mint(msg.sender, _quantity);
-
-    unchecked { publicMintCount[msg.sender] += _quantity; }
   }
 
   // SETTER FUNCTIONS
@@ -101,16 +95,6 @@ contract Hoodlrz is ERC721A, Ownable {
     if (_totalMinted() < _newMaxSupply) revert currentSupplyExceedNewMaxSupply();
     maxSupply = _newMaxSupply;
     emit SetNewMaxSupply(_newMaxSupply);
-  }
-
-  /**
-   * @notice set the max per address an address can mint in public mint
-   * @param _maxPerAddress the new max per address
-   */
-  function setMaxPerAddress(uint256 _maxPerAddress) external onlyOwner {
-    if (freezeContract) revert contractFreezed();
-    maxPerAddress = _maxPerAddress;
-    emit SetNewMaxPerAddress(_maxPerAddress);
   }
 
   /**
@@ -150,6 +134,13 @@ contract Hoodlrz is ERC721A, Ownable {
     if (freezeContract) revert contractFreezed();
     freezeContract = true;
     emit FreezeContract();
+  }
+
+  // WITHDRAW
+
+  function withdraw() external onlyOwner {
+    (bool success, ) = address(msg.sender).call{value: address(this).balance}("");
+    if (!success) revert failWithdraw();
   }
 
   // OVERRIDE FUNCTIONS

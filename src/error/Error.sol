@@ -10,3 +10,5 @@ error contractFreezed();
 error currentSupplyExceedNewMaxSupply();
 error invalidSignature();
 error invalidStatus();
+
+error failWithdraw();
