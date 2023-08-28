@@ -84,4 +84,10 @@ contract HoodlrzTest is Test {
     vm.expectRevert("Ownable: caller is not the owner");
     hoodlrz.setMaxSupply(10);
   }
+
+  function testMaxSupplyFailWhenFreeze() public {
+    hoodlrz.freeze();
+    vm.expectRevert(contractFreezed.selector);
+    hoodlrz.setMaxSupply(10);
+  }
 }
