@@ -135,4 +135,11 @@ contract HoodlrzTest is Test {
     vm.expectRevert("Ownable: caller is not the owner");
     hoodlrz.setPublicPrice(newPublicPrice);
   }
+
+  function testSetPublicPriceFailWhenFreeze() public {
+    uint256 newPublicPrice = 1 ether;
+    hoodlrz.freeze();
+    vm.expectRevert(contractFreezed.selector);
+    hoodlrz.setPublicPrice(newPublicPrice);
+  }
 }
