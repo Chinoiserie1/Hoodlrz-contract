@@ -47,6 +47,8 @@ contract HoodlrzTest is Test {
 
   // TEST SETTER
 
+  // setStatus
+
   function testSetStatus() public {
     require(hoodlrz.currentStatus() == Status.notInitialize, "fail init current status");
     hoodlrz.setStatus(Status.paused);
@@ -59,6 +61,8 @@ contract HoodlrzTest is Test {
     vm.expectRevert("Ownable: caller is not the owner");
     hoodlrz.setStatus(Status.paused);
   }
+
+  // setMaxSuuply
 
   function testSetMaxSupply() public {
     uint256 newMaxSupply = 100;
@@ -89,5 +93,14 @@ contract HoodlrzTest is Test {
     hoodlrz.freeze();
     vm.expectRevert(contractFreezed.selector);
     hoodlrz.setMaxSupply(10);
+  }
+
+  // setBaseURI
+
+  function testSetBaseURI() public {
+    string memory newURI = "My new URI";
+    hoodlrz.setBaseURI(newURI);
+    string memory currentURI = hoodlrz.baseURI();
+    require(keccak256(bytes(newURI)) == keccak256(bytes(currentURI)), "fail set new base URI");
   }
 }
