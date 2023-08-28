@@ -127,4 +127,12 @@ contract HoodlrzTest is Test {
     uint256 currentPrice = hoodlrz.publicPrice();
     require(currentPrice == newPublicPrice, "fail set public price");
   }
+
+  function testSetPublicPriceOnlyOwner() public {
+    uint256 newPublicPrice = 1 ether;
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert("Ownable: caller is not the owner");
+    hoodlrz.setPublicPrice(newPublicPrice);
+  }
 }
