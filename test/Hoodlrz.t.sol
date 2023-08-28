@@ -77,4 +77,11 @@ contract HoodlrzTest is Test {
     vm.expectRevert(currentSupplyExceedNewMaxSupply.selector);
     hoodlrz.setMaxSupply(newMaxSupply);
   }
+
+  function testMaxSupplyOnlyOwner() public {
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert("Ownable: caller is not the owner");
+    hoodlrz.setMaxSupply(10);
+  }
 }
