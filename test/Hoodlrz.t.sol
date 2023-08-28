@@ -118,4 +118,13 @@ contract HoodlrzTest is Test {
     vm.expectRevert(contractFreezed.selector);
     hoodlrz.setBaseURI(newURI);
   }
+
+  // setPublicPrice
+
+  function testSetPublicPrice() public {
+    uint256 newPublicPrice = 1 ether;
+    hoodlrz.setPublicPrice(newPublicPrice);
+    uint256 currentPrice = hoodlrz.publicPrice();
+    require(currentPrice == newPublicPrice, "fail set public price");
+  }
 }
