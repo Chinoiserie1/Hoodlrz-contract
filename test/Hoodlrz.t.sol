@@ -150,4 +150,11 @@ contract HoodlrzTest is Test {
     address currentSigner = hoodlrz.signer();
     require(currentSigner == signer, "fail set new signer");
   }
+
+  function testSetSignerOnlyOwner() public {
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert("Ownable: caller is not the owner");
+     hoodlrz.setSigner(signer);
+  }
 }
