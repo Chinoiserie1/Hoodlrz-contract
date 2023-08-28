@@ -111,4 +111,11 @@ contract HoodlrzTest is Test {
     vm.expectRevert("Ownable: caller is not the owner");
     hoodlrz.setBaseURI(newURI);
   }
+
+  function testSetBaseURIFailWhenFreeze() public {
+    string memory newURI = "My new URI";
+    hoodlrz.freeze();
+    vm.expectRevert(contractFreezed.selector);
+    hoodlrz.setBaseURI(newURI);
+  }
 }
