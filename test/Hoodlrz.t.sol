@@ -142,4 +142,12 @@ contract HoodlrzTest is Test {
     vm.expectRevert(contractFreezed.selector);
     hoodlrz.setPublicPrice(newPublicPrice);
   }
+
+  // setSigner
+
+  function testSetSigner() public {
+    hoodlrz.setSigner(signer);
+    address currentSigner = hoodlrz.signer();
+    require(currentSigner == signer, "fail set new signer");
+  }
 }
