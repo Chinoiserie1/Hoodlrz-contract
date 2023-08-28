@@ -103,4 +103,12 @@ contract HoodlrzTest is Test {
     string memory currentURI = hoodlrz.baseURI();
     require(keccak256(bytes(newURI)) == keccak256(bytes(currentURI)), "fail set new base URI");
   }
+
+  function testSetBaseURIOnlyOwner() public {
+    string memory newURI = "My new URI";
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert("Ownable: caller is not the owner");
+    hoodlrz.setBaseURI(newURI);
+  }
 }
