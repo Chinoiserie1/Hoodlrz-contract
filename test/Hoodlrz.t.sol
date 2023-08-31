@@ -189,4 +189,14 @@ contract HoodlrzTest is Test {
     uint256 balanceUser1 = hoodlrz.balanceOf(user1);
     require(balanceUser1 == 10, "fail allowlistMint");
   }
+
+  function testAllowlistMintFailInvalidSignature() public {
+    bytes memory signature = signAllowlist(address(user1), 10);
+    hoodlrz.setSigner(signer);
+    hoodlrz.setStatus(Status.allowlistMint);
+    vm.stopPrank();
+    vm.startPrank(user2);
+    vm.expectRevert(invalidSignature.selector);
+    hoodlrz.allowlistMint(10, signature);
+  }
 }
