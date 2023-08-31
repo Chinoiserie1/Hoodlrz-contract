@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "../src/Hoodlrz.sol";
 import "../src/IHoodlrz.sol";
 import "../src/error/Error.sol";
+import "../src/verification/Verification.sol";
 
 contract HoodlrzTest is Test {
   Hoodlrz public hoodlrz;
@@ -34,6 +35,10 @@ contract HoodlrzTest is Test {
     vm.startPrank(owner);
 
     hoodlrz = new Hoodlrz();
+  }
+
+  function testGas() public {
+    Hoodlrz contractGas = new Hoodlrz();
   }
 
   // TEST DEPLOY CORRECTLY
@@ -156,5 +161,32 @@ contract HoodlrzTest is Test {
     vm.prank(user1);
     vm.expectRevert("Ownable: caller is not the owner");
      hoodlrz.setSigner(signer);
+  }
+
+  // withdraw
+
+  function testWithdraw() public {
+
+  }
+
+  // allowlistMint
+
+  function signAllowlist(address user, uint256 quantity) internal view returns (bytes memory) {
+    bytes32 messageHash = Verification.getMessageHash(user, quantity, Status.allowlistMint);
+    bytes32 finalHash = Verification.getEthSignedMessageHash(messageHash);
+    (uint8 v, bytes32 r, bytes32 s) = vm.sign(signerPrivateKey, finalHash);
+    bytes memory signature = abi.encodePacked(r, s, v);
+    return signature;
+  }
+
+  function testAllowlistMint() public {
+    bytes memory signature = signAllowlist(address(user1), 10);
+    hoodlrz.setSigner(signer);
+    hoodlrz.setStatus(Status.allowlistMint);
+    vm.stopPrank();
+    vm.startPrank(user1);
+    hoodlrz.allowlistMint(10, signature);
+    uint256 balanceUser1 = hoodlrz.balanceOf(user1);
+    require(balanceUser1 == 10, "fail allowlistMint");
   }
 }
