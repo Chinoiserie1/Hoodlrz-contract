@@ -228,4 +228,13 @@ contract HoodlrzTest is Test {
     vm.expectRevert(invalidStatus.selector);
     hoodlrz.publicMint{ value: 10 * 0.03 ether }(10);
   }
+
+  function testPublicMintFailInvalidValueSend() public {
+    hoodlrz.setStatus(Status.publicMint);
+    vm.deal(user1, 100 ether);
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert(valueSendIncorrect.selector);
+    hoodlrz.publicMint{ value: 9 * 0.03 ether }(10);
+  }
 }
