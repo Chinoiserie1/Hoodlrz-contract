@@ -209,4 +209,15 @@ contract HoodlrzTest is Test {
     vm.expectRevert(invalidStatus.selector);
     hoodlrz.allowlistMint(10, signature);
   }
+
+  // publicMint
+
+  function testPublicMint() public {
+    hoodlrz.setStatus(Status.publicMint);
+    vm.deal(user1, 100 ether);
+    vm.stopPrank();
+    vm.prank(user1);
+    hoodlrz.publicMint{ value: 10 * 0.03 ether }(10);
+    require(hoodlrz.balanceOf(user1) == 10, "fail public mint");
+  }
 }
