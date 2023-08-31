@@ -220,4 +220,12 @@ contract HoodlrzTest is Test {
     hoodlrz.publicMint{ value: 10 * 0.03 ether }(10);
     require(hoodlrz.balanceOf(user1) == 10, "fail public mint");
   }
+
+  function testPublicMintFailInvalidStatus() public {
+    vm.deal(user1, 100 ether);
+    vm.stopPrank();
+    vm.prank(user1);
+    vm.expectRevert(invalidStatus.selector);
+    hoodlrz.publicMint{ value: 10 * 0.03 ether }(10);
+  }
 }

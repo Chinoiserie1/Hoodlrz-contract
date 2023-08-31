@@ -71,7 +71,7 @@ contract Hoodlrz is ERC721A, Ownable {
    * @notice mint function for public
    * @param _quantity the quantity to mint
    */
-  function publicMint(uint256 _quantity) external payable {
+  function publicMint(uint256 _quantity) external payable checkStatus(Status.publicMint) {
     if (_totalMinted() + _quantity > maxSupply) revert maxSupplyReach();
     if (msg.value < _quantity * publicPrice) revert valueSendIncorrect();
 
