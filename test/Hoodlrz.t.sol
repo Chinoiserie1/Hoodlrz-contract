@@ -199,4 +199,14 @@ contract HoodlrzTest is Test {
     vm.expectRevert(invalidSignature.selector);
     hoodlrz.allowlistMint(10, signature);
   }
+
+  function testAllowlistMintFailInvalidStatus() public {
+    bytes memory signature = signAllowlist(address(user1), 10);
+    hoodlrz.setSigner(signer);
+    hoodlrz.setStatus(Status.paused);
+    vm.stopPrank();
+    vm.startPrank(user1);
+    vm.expectRevert(invalidStatus.selector);
+    hoodlrz.allowlistMint(10, signature);
+  }
 }
