@@ -3,6 +3,7 @@ pragma solidity ^0.8.19;
 
 import "ERC721A/ERC721A.sol";
 import "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "lib/openzeppelin-contracts/contracts/token/common/ERC2981.sol";
 
 import "./IHoodlrz.sol";
 import "./verification/Verification.sol";
@@ -12,7 +13,7 @@ import "./verification/Verification.sol";
  * @author chixx.eth
  * @notice ERC721A for Hoodlrz
  */
-contract Hoodlrz is ERC721A, Ownable {
+contract Hoodlrz is ERC721A, ERC2981, Ownable {
   string public baseURI = "";
 
   address public signer;
@@ -32,6 +33,7 @@ contract Hoodlrz is ERC721A, Ownable {
 
   constructor() ERC721A("Hoodlrz", "HDLZ") {
     signer = msg.sender;
+    _setDefaultRoyalty(address(this), 500);
   }
 
   /**
@@ -143,7 +145,15 @@ contract Hoodlrz is ERC721A, Ownable {
     if (!success) revert failWithdraw();
   }
 
+  // receive function for royalties perpose
+
+  receive() external payable {}
+
   // OVERRIDE FUNCTIONS
+
+  function supportsInterface(bytes4 interfaceId) public view virtual override(ERC2981, ERC721A) returns (bool) {
+    return super.supportsInterface(interfaceId);
+  }
 
   function _baseURI() internal view override virtual returns (string memory) {
     return baseURI;
